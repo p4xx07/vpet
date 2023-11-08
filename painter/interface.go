@@ -1,7 +1,8 @@
-package main
+package painter
 
 import (
 	"github.com/gdamore/tcell/v2"
+	"virtualpet/pet"
 )
 
 type IUI interface {
@@ -9,11 +10,12 @@ type IUI interface {
 }
 
 type ui struct {
-	drawer IPainter
-	pet    *Pet
+	drawer  IPainter
+	pet     *pet.Pet
+	command *string
 }
 
-func NewUi(screen tcell.Screen, pet *Pet) IUI {
+func NewUi(screen tcell.Screen, pet *pet.Pet) IUI {
 	u := &ui{drawer: NewDrawer(screen), pet: pet}
 	go u.Draw()
 	return u
@@ -22,13 +24,14 @@ func NewUi(screen tcell.Screen, pet *Pet) IUI {
 func (u *ui) Draw() {
 	u.drawer.AddFunctionToDrawLoop(func() {
 		u.drawHeader(u.drawer)
-		u.drawPet(u.drawer, u.pet)
+		u.drawPet()
+		u.drawStats()
 	})
 }
 
 func (u *ui) drawHeader(d IPainter) {
 	const header = "action: "
-	for i, t := range []rune(header + command) {
+	for i, t := range []rune(header + *u.command) {
 		d.SetContent(i, 0, t, nil, defaultStyle)
 	}
 }
@@ -36,9 +39,9 @@ func (u *ui) drawHeader(d IPainter) {
 var animationFrames []string
 var animationIndex int
 
-func (u *ui) drawPet(drawer IPainter, pet *Pet) {
-	animationFrames = pet.GetFrames()
-	if pet == nil {
+func (u *ui) drawPet() {
+	animationFrames = u.pet.GetFrames()
+	if u.pet == nil {
 		return
 	}
 	x := 0
@@ -48,8 +51,12 @@ func (u *ui) drawPet(drawer IPainter, pet *Pet) {
 			x = 0
 			y += 1
 		}
-		drawer.SetContent(x, y, t, nil, defaultStyle)
+		u.drawer.SetContent(x, y, t, nil, defaultStyle)
 		x += 1
 	}
 	animationIndex = (animationIndex + 1) % len(animationFrames)
+}
+
+func (u *ui) drawStats() {
+
 }

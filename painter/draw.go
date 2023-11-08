@@ -1,4 +1,4 @@
-package main
+package painter
 
 import (
 	"github.com/gdamore/tcell/v2"
@@ -13,9 +13,10 @@ type IPainter interface {
 }
 
 type painter struct {
-	screen    tcell.Screen
-	mutex     sync.RWMutex
-	functions []func()
+	screen        tcell.Screen
+	mutex         sync.RWMutex
+	functions     []func()
+	functionMutex sync.RWMutex
 }
 
 var defaultStyle = tcell.StyleDefault.
@@ -32,11 +33,13 @@ func (d *painter) Start() {
 	go func() {
 		for {
 			d.screen.Clear()
+			d.functionMutex.RLock()
 			for _, f := range d.functions {
 				f()
 			}
+			d.functionMutex.RUnlock()
 			d.screen.Show()
-			time.Sleep(time.Millisecond) // Add a delay between screen updates if needed
+			time.Sleep(time.Millisecond * 15)
 		}
 	}()
 }
@@ -49,4 +52,10 @@ func (d *painter) SetContent(x, y int, primary rune, combining []rune, style tce
 
 func (d *painter) AddFunctionToDrawLoop(f func()) {
 	d.functions = append(d.functions, f)
+}
+
+func (d *painter) ClearDrawLoop() {
+	d.functionMutex.Lock()
+	defer d.functionMutex.Unlock()
+	d.functions = make([]func(), 0)
 }

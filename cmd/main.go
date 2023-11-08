@@ -3,6 +3,9 @@ package main
 import (
 	"github.com/gdamore/tcell/v2"
 	"log"
+	"virtualpet/instructor"
+	"virtualpet/painter"
+	"virtualpet/pet"
 )
 
 func main() {
@@ -15,8 +18,11 @@ func main() {
 	}
 	defer screen.Fini()
 
-	NewUi(screen, &Pet{})
+	p := &pet.Pet{}
+	painter.NewUi(screen, p)
+	i := instructor.NewService(p)
 
+	command := ""
 	for {
 		ev := screen.PollEvent()
 		switch ev := ev.(type) {
@@ -25,7 +31,8 @@ func main() {
 		case *tcell.EventKey:
 			switch ev.Key() {
 			case tcell.KeyEnter:
-				handle(command)
+				i.Handle(command)
+				command = ""
 			case tcell.KeyRune:
 				command += string(ev.Rune())
 			}
