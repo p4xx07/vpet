@@ -2,10 +2,11 @@ package painter
 
 import (
 	"fmt"
-	"github.com/gdamore/tcell/v2"
 	"sync"
 	"time"
 	"virtualpet/pet"
+
+	"github.com/gdamore/tcell/v2"
 )
 
 type IUIService interface {
@@ -76,6 +77,7 @@ func (u *uiService) drawBox(x, y, width, height int) {
 
 var animationFrames []string
 var animationIndex int
+var frameCounter uint64
 
 func (u *uiService) drawPet(x, y int) {
 	startX := x
@@ -91,7 +93,9 @@ func (u *uiService) drawPet(x, y int) {
 		u.screen.SetContent(x, y, t, nil, defaultStyle)
 		x += 1
 	}
-	animationIndex = (animationIndex + 1) % len(animationFrames)
+	if frameCounter%60 == 0 {
+		animationIndex = (animationIndex + 1) % len(animationFrames)
+	}
 }
 
 var defaultStyle = tcell.StyleDefault.
@@ -107,6 +111,8 @@ func (u *uiService) Start() {
 		}
 		u.functionMutex.RUnlock()
 		u.screen.Show()
+
+		frameCounter++
 		time.Sleep(time.Millisecond * 15)
 	}
 }
