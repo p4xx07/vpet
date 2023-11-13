@@ -5,6 +5,14 @@ import (
 	"time"
 )
 
+type IPet interface {
+	Feed()
+	Play()
+	GetFrames() []string
+	IsEating() bool
+	IsPlaying() bool
+}
+
 type Pet struct {
 	Name      string
 	Type      string

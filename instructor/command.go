@@ -16,10 +16,9 @@ func NewService(pet *pet.Pet) IService {
 
 func (s *service) Handle(c string) {
 	switch c {
+	case "play":
+		s.pet.Play()
 	case "feed":
-		{
-			s.pet.Feed()
-		}
-
+		s.pet.Feed()
 	}
 }

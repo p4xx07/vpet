@@ -19,10 +19,10 @@ func main() {
 	defer screen.Fini()
 
 	p := &pet.Pet{}
-	painter.NewUi(screen, p)
+	command := ""
+	painter.NewUi(screen, &command, p)
 	i := instructor.NewService(p)
 
-	command := ""
 	for {
 		ev := screen.PollEvent()
 		switch ev := ev.(type) {
