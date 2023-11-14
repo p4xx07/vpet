@@ -39,4 +39,3 @@ func (u *uiService) drawBox(x, y, width, height int) {
 
 var animationFrames []string
 var animationIndex int
-var frameCounter uint64

@@ -18,6 +18,7 @@ type uiService struct {
 	mutex         sync.RWMutex
 	functions     []func()
 	functionMutex sync.RWMutex
+	frameCounter  int
 }
 
 func NewUi(screen tcell.Screen, command *string, pet *pet.Pet) IUIService {
@@ -36,7 +37,7 @@ func (u *uiService) Start() {
 		u.functionMutex.RUnlock()
 		u.screen.Show()
 
-		frameCounter++
+		u.frameCounter++
 		time.Sleep(time.Millisecond * 15)
 	}
 }
@@ -52,7 +53,7 @@ func (u *uiService) drawStats(x, y, width, height int) {
 	u.drawText(x+1, y+1, fmt.Sprintf("Hunger: %d", u.pet.Hunger))
 	u.drawText(x+1, y+2, fmt.Sprintf("Happiness: %d", u.pet.Happiness))
 	u.drawText(x+1, y+3, fmt.Sprintf("Strength: %d", u.pet.Strength))
-	u.drawText(x+1, y+3, fmt.Sprintf("Location: %s", u.pet.Location))
+	u.drawText(x+1, y+4, fmt.Sprintf("Location: %s", u.pet.Location))
 }
 
 func (u *uiService) drawPet(x, y int) {
@@ -69,7 +70,7 @@ func (u *uiService) drawPet(x, y int) {
 		u.screen.SetContent(x, y, t, nil, defaultStyle)
 		x += 1
 	}
-	if frameCounter%60 == 0 {
+	if u.frameCounter%60 == 0 {
 		animationIndex = (animationIndex + 1) % len(animationFrames)
 	}
 }
