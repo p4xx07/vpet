@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/gdamore/tcell/v2"
 	"log"
-	"virtualpet/instructor"
+	"os"
 	"virtualpet/painter"
 	"virtualpet/pet"
 )
@@ -18,10 +18,9 @@ func main() {
 	}
 	defer screen.Fini()
 
-	p := &pet.Pet{}
+	p := pet.NewPet()
 	command := ""
 	painter.NewUi(screen, &command, p)
-	i := instructor.NewService(p)
 
 	for {
 		ev := screen.PollEvent()
@@ -30,12 +29,35 @@ func main() {
 			continue
 		case *tcell.EventKey:
 			switch ev.Key() {
+			case tcell.KeyDEL:
+				if len(command) == 0 {
+					continue
+				}
+
+				command = command[:len(command)-1]
 			case tcell.KeyEnter:
-				i.Handle(command)
+				handle(screen, p, command)
 				command = ""
 			case tcell.KeyRune:
 				command += string(ev.Rune())
 			}
 		}
+	}
+}
+
+func handle(screen tcell.Screen, pet *pet.Pet, c string) {
+	switch c {
+	case "play":
+		pet.Play()
+	case "feed":
+		pet.Feed()
+	case "park":
+		pet.Location = "park"
+	case "home":
+		pet.Location = "home"
+	case "exit":
+		screen.Clear()
+		screen.Show()
+		os.Exit(0)
 	}
 }

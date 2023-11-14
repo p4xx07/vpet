@@ -11,6 +11,7 @@ type IPet interface {
 	GetFrames() []string
 	IsEating() bool
 	IsPlaying() bool
+	GetLocation() string
 }
 
 type Pet struct {
@@ -19,6 +20,7 @@ type Pet struct {
 	Hunger    int
 	Happiness int
 	Strength  int
+	Location  string
 	Birthdate time.Time
 	LastFed   time.Time
 }
@@ -32,6 +34,7 @@ func NewPet() *Pet {
 		Type:      petTypes[rand.Intn(len(petTypes))],
 		Hunger:    0,
 		Happiness: 0,
+		Location:  "Home",
 		Strength:  rand.Intn(255),
 		Birthdate: time.Now(),
 		LastFed:   time.Now(),
@@ -41,6 +44,10 @@ func NewPet() *Pet {
 func (p *Pet) Feed() {
 	p.Hunger = 0
 	p.LastFed = time.Now()
+}
+
+func (p *Pet) GetLocation() string {
+	return p.Location
 }
 
 func (p *Pet) Play() {
