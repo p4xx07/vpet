@@ -45,16 +45,16 @@ func main() {
 	}
 }
 
-func handle(screen tcell.Screen, pet *pet.Pet, c string) {
+func handle(screen tcell.Screen, pet pet.IPet, c string) {
 	switch c {
 	case "play":
 		pet.Play()
 	case "feed":
 		pet.Feed()
 	case "park":
-		pet.Location = "park"
+		pet.SetLocation("park")
 	case "home":
-		pet.Location = "home"
+		pet.SetLocation("home")
 	case "exit":
 		screen.Clear()
 		screen.Show()

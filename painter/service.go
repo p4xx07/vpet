@@ -12,7 +12,7 @@ import (
 type IUIService interface{}
 
 type uiService struct {
-	pet           *pet.Pet
+	pet           pet.IPet
 	command       *string
 	screen        tcell.Screen
 	mutex         sync.RWMutex
@@ -21,7 +21,7 @@ type uiService struct {
 	frameCounter  int
 }
 
-func NewUi(screen tcell.Screen, command *string, pet *pet.Pet) IUIService {
+func NewUi(screen tcell.Screen, command *string, pet pet.IPet) IUIService {
 	u := &uiService{pet: pet, command: command, screen: screen}
 	go u.Start()
 	return u
@@ -49,11 +49,12 @@ func (u *uiService) drawGame() {
 }
 
 func (u *uiService) drawStats(x, y, width, height int) {
+	pet := u.pet.GetPet()
 	u.drawBox(x, y, width, height)
-	u.drawText(x+1, y+1, fmt.Sprintf("Hunger: %d", u.pet.Hunger))
-	u.drawText(x+1, y+2, fmt.Sprintf("Happiness: %d", u.pet.Happiness))
-	u.drawText(x+1, y+3, fmt.Sprintf("Strength: %d", u.pet.Strength))
-	u.drawText(x+1, y+4, fmt.Sprintf("Location: %s", u.pet.Location))
+	u.drawText(x+1, y+1, fmt.Sprintf("Hunger: %d", pet.Hunger))
+	u.drawText(x+1, y+2, fmt.Sprintf("Happiness: %d", pet.Happiness))
+	u.drawText(x+1, y+3, fmt.Sprintf("Strength: %d", pet.Strength))
+	u.drawText(x+1, y+4, fmt.Sprintf("Location: %s", pet.Location))
 }
 
 func (u *uiService) drawPet(x, y int) {
