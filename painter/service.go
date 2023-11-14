@@ -49,12 +49,13 @@ func (u *uiService) drawGame() {
 }
 
 func (u *uiService) drawStats(x, y, width, height int) {
-	pet := u.pet.GetPet()
+	getPet := u.pet.GetPet()
 	u.drawBox(x, y, width, height)
-	u.drawText(x+1, y+1, fmt.Sprintf("Hunger: %d", pet.Hunger))
-	u.drawText(x+1, y+2, fmt.Sprintf("Happiness: %d", pet.Happiness))
-	u.drawText(x+1, y+3, fmt.Sprintf("Strength: %d", pet.Strength))
-	u.drawText(x+1, y+4, fmt.Sprintf("Location: %s", pet.Location))
+	u.drawText(x+1, y+1, fmt.Sprintf("Name: %s", getPet.Name))
+	u.drawText(x+1, y+2, fmt.Sprintf("Type: %s", getPet.Type))
+	u.drawText(x+1, y+3, fmt.Sprintf("Hunger: %d", getPet.Hunger))
+	u.drawText(x+1, y+4, fmt.Sprintf("Happiness: %d", getPet.Happiness))
+	u.drawText(x+1, y+5, fmt.Sprintf("Location: %s", getPet.Location))
 }
 
 func (u *uiService) drawPet(x, y int) {

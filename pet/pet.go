@@ -2,6 +2,7 @@ package pet
 
 import (
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -21,23 +22,21 @@ type Pet struct {
 	Type      string
 	Hunger    int
 	Happiness int
-	Strength  int
 	Location  string
 	Birthdate time.Time
 	LastFed   time.Time
 }
 
 var names = []string{"Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack", "Kathy", "Leo", "Molly", "Nathan", "Olivia", "Paul", "Quincy", "Rachel", "Sam", "Tom", "Ursula", "Victor", "Wendy", "Xander", "Yvonne", "Zane"}
-var petTypes = []string{"Dog", "Cat", "Bird", "Fish", "Rabbit", "Hamster", "Guinea Pig", "Ferret", "Turtle", "Snake", "Lizard", "Horse", "Pony", "Gerbil", "Mouse", "Rat", "Chinchilla", "Hedgehog", "Tarantula", "Hermit Crab"}
+var petTypes = []string{"Dog", "Cat", "Bird", "Fish", "Bunny"}
 
 func NewPet() IPet {
 	p := Pet{
 		Name:      names[rand.Intn(len(names))],
 		Type:      petTypes[rand.Intn(len(petTypes))],
-		Hunger:    0,
-		Happiness: 0,
-		Location:  "Home",
-		Strength:  rand.Intn(255),
+		Hunger:    rand.Intn(255),
+		Happiness: rand.Intn(255),
+		Location:  "home",
 		Birthdate: time.Now(),
 		LastFed:   time.Now(),
 	}
@@ -46,15 +45,14 @@ func NewPet() IPet {
 }
 
 func choosePet(pet Pet) IPet {
-	randomNumber := rand.Intn(4) + 1
-	switch randomNumber {
-	case 1:
+	switch strings.ToLower(pet.Type) {
+	case "cat":
 		return &Cat{Pet: pet}
-	case 2:
+	case "bird":
 		return &Bird{Pet: pet}
-	case 3:
+	case "fish":
 		return &Fish{Pet: pet}
-	case 4:
+	case "bunny":
 		return &Bunny{Pet: pet}
 	default:
 		return &Dog{Pet: pet}
