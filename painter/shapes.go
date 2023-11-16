@@ -21,6 +21,8 @@ func (u *uiService) drawProgressBar(x, y int, progress, total int32) {
 		if i < fillWidth {
 			if float64(progress)/float64(total) < 0.3 {
 				style = tcell.StyleDefault.Foreground(tcell.ColorRed)
+			} else if float64(progress)/float64(total) < 0.5 {
+				style = tcell.StyleDefault.Foreground(tcell.ColorYellow)
 			} else {
 				style = tcell.StyleDefault.Foreground(tcell.ColorGreen)
 			}

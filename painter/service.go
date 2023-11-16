@@ -57,7 +57,7 @@ func (u *uiService) updateGame() {
 				u.pet.HappinessDecay(rand.Int31n(10))
 			}
 			if rand.Intn(100) < 1 {
-				u.pet.Shit()
+				u.pet.Poop()
 			}
 			u.pet.Die()
 		default:
@@ -73,7 +73,7 @@ func (u *uiService) drawGame() {
 	u.drawHeader(20)
 	u.drawStats(0, 0, 20, 20)
 	u.drawPet(22, 2)
-	u.drawShit(44, 2)
+	u.drawPoop(44, 2)
 }
 
 func (u *uiService) drawStats(x, y, width, height int) {
@@ -83,10 +83,10 @@ func (u *uiService) drawStats(x, y, width, height int) {
 	u.drawText(x+1, y+2, fmt.Sprintf("📍 %s", getPet.Location))
 	u.drawText(x+1, y+3, "🍕")
 	u.drawProgressBar(x+5, y+3, getPet.Satisfaction, pet.MaxStat)
-	u.drawText(x+1, y+4, "🎭")
+	u.drawText(x+1, y+4, "😊")
 	u.drawProgressBar(x+5, y+4, getPet.Happiness, pet.MaxStat)
 	u.drawText(x+1, y+5, "💩")
-	u.drawProgressBar(x+5, y+5, pet.MaxStat-getPet.ShitView, pet.MaxStat)
+	u.drawProgressBar(x+5, y+5, pet.MaxStat-getPet.PoopView, pet.MaxStat)
 }
 
 func (u *uiService) drawPet(x, y int) {
@@ -123,8 +123,8 @@ func (u *uiService) drawGameOver() {
 	u.drawText(0, 0, fmt.Sprintf("%s is dead!", u.pet.GetPet().Name))
 }
 
-func (u *uiService) drawShit(x, y int) {
-	const shitASCII = `     (   )
+func (u *uiService) drawPoop(x, y int) {
+	const poopASCII = `     (   )
   (   ) (
    ) _   )
     ( \_
@@ -132,8 +132,8 @@ func (u *uiService) drawShit(x, y int) {
  (____\___))   
 	`
 
-	if u.pet.GetPet().ShitView <= 0 {
+	if u.pet.GetPet().PoopView <= 0 {
 		return
 	}
-	u.drawShape(x, y, []rune(shitASCII))
+	u.drawShape(x, y, []rune(poopASCII))
 }

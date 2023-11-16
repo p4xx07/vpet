@@ -54,10 +54,8 @@ func handle(screen tcell.Screen, pet pet.IPet, c string) {
 		pet.Feed(rand.Int31n(30))
 	case "clean":
 		pet.Clean()
-	case "park":
-		pet.SetLocation("park")
-	case "home":
-		pet.SetLocation("home")
+	case "travel":
+		pet.Travel()
 	case "exit":
 		screen.Clear()
 		screen.Show()

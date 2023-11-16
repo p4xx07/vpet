@@ -6,6 +6,7 @@ import (
 	"strings"
 	"sync/atomic"
 	"time"
+	"virtualpet/location"
 )
 
 const (
@@ -13,27 +14,25 @@ const (
 	MinStat int32 = 0
 
 	WasteCoefficient float64 = 0.8
-	MaxShitLength    int32   = 50
+	MaxPoopLength    int32   = 50
 )
 
 type IPetActions interface {
 	Feed(amount int32)
 	Clean()
 	Play()
+	Travel()
 }
 
 type IPetDecay interface {
 	HappinessDecay(amount int32)
 	Starve(amount int32)
-	Shit()
+	Poop()
 	Die()
 }
 
 type IPetChecks interface {
 	GetPet() Pet
-	IsEating() bool
-	IsPlaying() bool
-	SetLocation(s string)
 	GetFrames() []string
 }
 
@@ -48,24 +47,24 @@ type Pet struct {
 	Type         string
 	Satisfaction int32
 	Happiness    int32
-	ShitBuffer   int32
-	ShitView     int32
-	Location     string
+	PoopBuffer   int32
+	PoopView     int32
+	Location     location.Location
 	Birthdate    time.Time
 	LastFed      time.Time
 	Dead         bool
 }
 
 var names = []string{"Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack", "Kathy", "Leo", "Molly", "Nathan", "Olivia", "Paul", "Quincy", "Rachel", "Sam", "Tom", "Ursula", "Victor", "Wendy", "Xander", "Yvonne", "Zane"}
-var petTypes = []string{"Dog", "Cat", "Bird", "Fish", "Bunny"}
+var types = []string{"Dog", "Cat", "Bird", "Fish", "Bunny"}
 
 func NewPet() IPet {
 	p := Pet{
 		Name:         names[rand.Intn(len(names))],
-		Type:         petTypes[rand.Intn(len(petTypes))],
+		Type:         types[rand.Intn(len(types))],
 		Satisfaction: rand.Int31n(MaxStat),
 		Happiness:    rand.Int31n(MaxStat),
-		Location:     "home",
+		Location:     location.Home,
 		Birthdate:    time.Now(),
 		LastFed:      time.Now(),
 	}
@@ -95,8 +94,16 @@ func (p *Pet) Feed(amount int32) {
 	p.LastFed = time.Now()
 }
 
-func (p *Pet) SetLocation(location string) {
-	p.Location = location
+func (p *Pet) Travel() {
+	var result string
+	for i := 0; i < 10; i++ {
+		result = location.locations[rand.Intn(len(location.locations))]
+		if result != p.Location {
+			break
+		}
+	}
+
+	p.Location = result
 }
 
 func (p *Pet) Play() {
@@ -113,33 +120,25 @@ func (p *Pet) GetFrames() []string {
 	return []string{"N/A"}
 }
 
-func (p *Pet) IsPlaying() bool {
-	return true
-}
-
-func (p *Pet) IsEating() bool {
-	return true
-}
-
 func (p *Pet) GetPet() Pet {
 	return *p
 }
 
-func (p *Pet) Shit() {
-	if p.ShitBuffer == 0 {
+func (p *Pet) Poop() {
+	if p.PoopBuffer == 0 {
 		return
 	}
 
-	amount := min(p.ShitBuffer, rand.Int31n(MaxShitLength))
-	p.ShitView += amount
-	p.ShitBuffer -= amount
+	amount := min(p.PoopBuffer, rand.Int31n(MaxPoopLength))
+	p.PoopView += amount
+	p.PoopBuffer -= amount
 }
 
 func (p *Pet) Starve(amount int32) {
 	result := max(p.Satisfaction-amount, MinStat)
 	delta := p.Satisfaction - result
 	waste := math.Abs(float64(delta) * WasteCoefficient)
-	p.ShitBuffer += int32(waste)
+	p.PoopBuffer += int32(waste)
 
 	atomic.StoreInt32(&p.Satisfaction, result)
 }
@@ -150,11 +149,11 @@ func (p *Pet) HappinessDecay(amount int32) {
 }
 
 func (p *Pet) Clean() {
-	p.ShitView = 0
+	p.PoopView = 0
 }
 
 func (p *Pet) Die() {
-	if p.Satisfaction <= 0 || p.Happiness <= 0 || p.ShitView > MaxStat {
+	if p.Satisfaction <= 0 || p.Happiness <= 0 || p.PoopView > MaxStat {
 		p.Dead = true
 	}
 }
