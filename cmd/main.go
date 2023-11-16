@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gdamore/tcell/v2"
 	"log"
+	"math/rand"
 	"os"
 	"virtualpet/painter"
 	"virtualpet/pet"
@@ -50,7 +51,9 @@ func handle(screen tcell.Screen, pet pet.IPet, c string) {
 	case "play":
 		pet.Play()
 	case "feed":
-		pet.Feed()
+		pet.Feed(rand.Int31n(30))
+	case "clean":
+		pet.Clean()
 	case "park":
 		pet.SetLocation("park")
 	case "home":
