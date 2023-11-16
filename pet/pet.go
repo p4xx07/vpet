@@ -154,7 +154,7 @@ func (p *Pet) Clean() {
 }
 
 func (p *Pet) Die() {
-	if p.Satisfaction <= 0 || p.Happiness <= 0 {
+	if p.Satisfaction <= 0 || p.Happiness <= 0 || p.ShitView > MaxStat {
 		p.Dead = true
 	}
 }

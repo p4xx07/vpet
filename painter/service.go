@@ -45,7 +45,7 @@ func (u *uiService) Start() {
 }
 
 func (u *uiService) updateGame() {
-	c := time.NewTicker(time.Second)
+	c := time.NewTicker(time.Millisecond * 200)
 
 	for {
 		select {
@@ -85,6 +85,8 @@ func (u *uiService) drawStats(x, y, width, height int) {
 	u.drawProgressBar(x+5, y+3, getPet.Satisfaction, pet.MaxStat)
 	u.drawText(x+1, y+4, "🎭")
 	u.drawProgressBar(x+5, y+4, getPet.Happiness, pet.MaxStat)
+	u.drawText(x+1, y+5, "💩")
+	u.drawProgressBar(x+5, y+5, pet.MaxStat-getPet.ShitView, pet.MaxStat)
 }
 
 func (u *uiService) drawPet(x, y int) {
